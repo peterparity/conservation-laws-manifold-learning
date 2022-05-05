@@ -1,6 +1,8 @@
 using DynamicalSystems
 using DifferentialEquations
 
+const newaxis = [CartesianIndex()]
+
 svector_access(::Nothing) = nothing
 svector_access(x::AbstractArray) = SVector{length(x),Int}(x...)
 svector_access(x::Int) = SVector{1,Int}(x)

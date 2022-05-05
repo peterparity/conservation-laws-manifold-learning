@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import argparse
 
 
 def eccentric_anomaly_from_mean(e, M, tol=1e-14, MAX_ITERATIONS=1000):
@@ -122,10 +123,32 @@ def generate_data(
 
 
 if __name__ == "__main__":
-    n_trajs = 1000
-    data, params = generate_data(n_trajs, n_samples=100, check=True)
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "n_trajs", type=int, default=1000, help="number of trajectories"
+    )
+    parser.add_argument(
+        "n_samples",
+        type=int,
+        default=100,
+        help="number of time samples per trajectory",
+    )
+    parser.add_argument(
+        "--noise", type=np.double, default="0.0", help="stdv of additive noise"
+    )
+    parser.add_argument("--save", default=None, help="save file")
+    args = parser.parse_args()
 
-    data_dir = os.path.dirname(os.path.realpath(__file__))
-    save_file = os.path.join(data_dir, f"planar_orbits_{n_trajs}.npz")
+    data, params = generate_data(args.n_trajs, n_samples=args.n_samples, check=True)
+
+    if args.save is None:
+        data_dir = os.path.dirname(os.path.realpath(__file__))
+        file_name = f"planar_orbits_{args.n_trajs}_{args.n_samples}"
+        if args.noise > 0:
+            file_name += f"_noise{args.noise}"
+        save_file = os.path.join(data_dir, file_name + ".npz")
+    else:
+        save_file = args.save
+
     print("Saving to: ", save_file)
     np.savez(save_file, data=data, params=params)

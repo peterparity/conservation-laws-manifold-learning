@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.special import ellipj
 import os
+import argparse
 
 
 def generate_data(
@@ -37,10 +38,30 @@ def generate_data(
 
 
 if __name__ == "__main__":
-    n_trajs = 100
-    data, params = generate_data(n_trajs, n_samples=100)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("n_trajs", type=int, default=100, help="number of trajectories")
+    parser.add_argument(
+        "n_samples",
+        type=int,
+        default=100,
+        help="number of time samples per trajectory",
+    )
+    parser.add_argument(
+        "--noise", type=np.double, default="0.0", help="stdv of additive noise"
+    )
+    parser.add_argument("--save", default=None, help="save file")
+    args = parser.parse_args()
 
-    data_dir = os.path.dirname(os.path.realpath(__file__))
-    save_file = os.path.join(data_dir, f"pendulum_{n_trajs}.npz")
+    data, params = generate_data(args.n_trajs, n_samples=args.n_samples)
+
+    if args.save is None:
+        data_dir = os.path.dirname(os.path.realpath(__file__))
+        file_name = f"pendulum_{args.n_trajs}_{args.n_samples}"
+        if args.noise > 0:
+            file_name += f"_noise{args.noise}"
+        save_file = os.path.join(data_dir, file_name + ".npz")
+    else:
+        save_file = args.save
+
     print("Saving to: ", save_file)
     np.savez(save_file, data=data, params=params)

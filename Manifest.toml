@@ -467,6 +467,12 @@ git-tree-sha1 = "1bd6fc0c344fc0cbee1f42f8d2e7ec8253dda2d2"
 uuid = "f6369f11-7733-5829-9624-2563aa707210"
 version = "0.10.25"
 
+[[deps.FourierTools]]
+deps = ["ChainRulesCore", "FFTW", "IndexFunArrays", "LinearAlgebra", "NDTools", "PaddedViews", "ShiftedArrays"]
+git-tree-sha1 = "c68ab0d3946a387bed1d396f07be90d9b99251e4"
+uuid = "b18b359b-aebc-45ac-a139-9c0ccbb2871e"
+version = "0.3.1"
+
 [[deps.FreeType]]
 deps = ["CEnum", "FreeType2_jll"]
 git-tree-sha1 = "cabd77ab6a6fdff49bfd24af2ebe76e6e018a2b4"
@@ -593,6 +599,12 @@ version = "2.7.1+0"
 git-tree-sha1 = "debdd00ffef04665ccbb3e150747a77560e8fad1"
 uuid = "615f187c-cbe4-4ef1-ba3b-2fcf58d6d173"
 version = "0.1.1"
+
+[[deps.IndexFunArrays]]
+deps = ["ChainRulesCore", "LinearAlgebra"]
+git-tree-sha1 = "62f02e1e92d8a1d08ac843bc2a25b3a9e57ef563"
+uuid = "613c443e-d742-454e-bfc6-1d7f8dd76566"
+version = "0.2.4"
 
 [[deps.Inflate]]
 git-tree-sha1 = "f5fc07d4e706b84f72d54eedcc1c13d92fb0871c"
@@ -939,6 +951,12 @@ git-tree-sha1 = "ba8c0f8732a24facba709388c74ba99dcbfdda1e"
 uuid = "d8a4904e-b15c-11e9-3269-09a3773c0cb0"
 version = "1.0.0"
 
+[[deps.NDTools]]
+deps = ["LinearAlgebra", "OffsetArrays", "PaddedViews", "Random", "Statistics"]
+git-tree-sha1 = "dc8baff55f5d247198ea29fbc8a6affc7aed21c3"
+uuid = "98581153-e998-4eef-8d0d-5ec2c052313d"
+version = "0.4.3"
+
 [[deps.NLSolversBase]]
 deps = ["DiffResults", "Distributed", "FiniteDiff", "ForwardDiff"]
 git-tree-sha1 = "50310f934e55e5ca3912fb941dec199b49ca9b68"
@@ -1049,6 +1067,12 @@ deps = ["LinearAlgebra", "SparseArrays", "SuiteSparse"]
 git-tree-sha1 = "e8185b83b9fc56eb6456200e873ce598ebc7f262"
 uuid = "90014a1f-27ba-587c-ab20-58faa44d9150"
 version = "0.11.7"
+
+[[deps.PaddedViews]]
+deps = ["OffsetArrays"]
+git-tree-sha1 = "03a7a85b76381a3d04c7a1656039197e70eda03d"
+uuid = "5432bcbf-9aad-5242-b902-cca2824c8663"
+version = "0.5.11"
 
 [[deps.Parameters]]
 deps = ["OrderedCollections", "UnPack"]
@@ -1298,6 +1322,11 @@ version = "0.8.2"
 [[deps.SharedArrays]]
 deps = ["Distributed", "Mmap", "Random", "Serialization"]
 uuid = "1a1011a3-84de-559e-8e89-a11a2f7dc383"
+
+[[deps.ShiftedArrays]]
+git-tree-sha1 = "22395afdcf37d6709a5a0766cc4a5ca52cb85ea0"
+uuid = "1277b4bf-5013-50f5-be3d-901d8477a67a"
+version = "1.0.0"
 
 [[deps.Showoff]]
 deps = ["Dates", "Grisu"]
