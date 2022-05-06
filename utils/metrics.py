@@ -102,6 +102,9 @@ def wasserstein_metric(
             **sinkhorn_kwargs,
         )
 
+    # if M is not None:
+    #     return sol.reg_ot_cost, sol.converged, 10 * jnp.sum(sol.errors > -1), M
+
     # cost matrix, converged, steps
     return sol.reg_ot_cost, sol.converged, 10 * jnp.sum(sol.errors > -1)
 
@@ -161,7 +164,7 @@ def distance_matrix(
                     steps[i_range[0] : i_range[1], j_range[0] : j_range[1]] = out[2]
 
     # symmetrize & debias, https://arxiv.org/pdf/2006.02575.pdf
-    cost_diag = np.diag(cost_mat) / 2
-    dist_mat = ((cost_mat + cost_mat.T - cost_diag - cost_diag[:, None])) ** (1 / p)
+    cost_diag = np.diag(cost_mat)
+    dist_mat = ((cost_mat + cost_mat.T - cost_diag - cost_diag[:, None]) / 2) ** (1 / p)
 
     return dist_mat, converged, steps
