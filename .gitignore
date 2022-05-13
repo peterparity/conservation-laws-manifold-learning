@@ -11,6 +11,9 @@ __pycache__/
 # Output files
 out_*
 
+# Figures
+figures/
+
 # Notebook checkpoints
 *.ipynb_checkpoints/
 

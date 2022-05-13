@@ -14,7 +14,7 @@ from ott.geometry.epsilon_scheduler import Epsilon
 from ott.geometry.geometry import Geometry
 
 
-def local_PCA(dist_mat, n_neighbors=20, n_mds_components=20):
+def local_PCA(dist_mat, n_neighbors=20, n_mds_components=20, cutoff_scale=1):
     embedding = MDS(
         n_components=n_mds_components, dissimilarity="precomputed", random_state=0
     ).fit_transform(dist_mat)
@@ -23,7 +23,7 @@ def local_PCA(dist_mat, n_neighbors=20, n_mds_components=20):
     nn.fit(embedding)
     _, nn_ind = nn.kneighbors()
     nn_ind = np.concatenate((np.arange(embedding.shape[0])[:, None], nn_ind), axis=1)
-    pca = PCA(n_components=n_neighbors)
+    pca = PCA(n_components=np.min([n_neighbors, n_mds_components]))
 
     explained_variance_ratios = []
     for i in range(nn_ind.shape[0]):
@@ -35,7 +35,12 @@ def local_PCA(dist_mat, n_neighbors=20, n_mds_components=20):
         return np.cos(x) * (x < np.pi / 2)
 
     estimated_dim = np.sum(
-        1 - c(np.pi * n_mds_components * explained_variance_ratios.mean(0))
+        1
+        - c(
+            np.pi
+            * explained_variance_ratios.mean(0)
+            / (2 * cutoff_scale * explained_variance_ratios.mean(0)[0])
+        )
     )
     return estimated_dim, explained_variance_ratios
 

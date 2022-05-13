@@ -32,7 +32,13 @@ def gaussian_weight_matrix(dist_mat, epsilon="max", n_neighbors=5, alpha=1):
 
 
 def diffusion_map(
-    dist_mat, n_components=20, epsilon="max", n_neighbors=5, alpha=1, robust=True
+    dist_mat,
+    n_components=20,
+    epsilon="max",
+    n_neighbors=5,
+    alpha=1,
+    robust=True,
+    v0=None,
 ):
     sym_laplacian, epsilon = gaussian_weight_matrix(
         dist_mat, epsilon=epsilon, n_neighbors=n_neighbors, alpha=alpha
@@ -60,7 +66,9 @@ def diffusion_map(
         np.fill_diagonal(sym_laplacian, 1 + sym_laplacian.diagonal())
 
     # Compute largest eigenvalues/eigenvectors of -GL (maximum eigenvalue of 1)
-    evals, embedding = eigsh(-sym_laplacian, k=n_components + 1, which="LM", sigma=1.0)
+    evals, embedding = eigsh(
+        -sym_laplacian, k=n_components + 1, which="LM", sigma=1.0, v0=None
+    )
 
     # Drop largest eigenvalue = 1 and
     # rescale eigenvectors to obtain eigenvectors of D^-1 W
@@ -76,10 +84,16 @@ def diffusion_map(
 
 
 def heuristic_importance_score(
-    evals, embedding, threshold=0.8, n_neighbors=5, weights="standard"
+    evals,
+    embedding,
+    threshold=0.8,
+    n_neighbors=5,
+    weights="adjusted",
+    reweight=None,
+    output_raw_scores=False,
 ):
     n_components = evals.shape[0]
-    if weights == "standard":
+    if weights == "simple":
         weights = np.sqrt(evals[0] / evals)
     elif weights == "adjusted":
         relevant_idx = evals > -1
@@ -91,6 +105,9 @@ def heuristic_importance_score(
     elif weights == "constant":
         weights = np.ones_like(evals)
 
+    if reweight is not None:
+        weights *= reweight
+
     n_trajectories = embedding.shape[0]
     n_off_diag_entries = n_trajectories * (n_trajectories - 1)
     mean_pairwise_dist_0 = np.sum(
@@ -101,16 +118,24 @@ def heuristic_importance_score(
 
     embed_list = [0]
     scores_pass = [mean_pairwise_dist_0 * weights[0]]
+    if output_raw_scores:
+        raw_scores = [mean_pairwise_dist_0]
     assert scores_pass[0] >= threshold
     scores_fail = [0]
+
     for i in range(1, n_components):
         current_embedding = embedding[:, embed_list]
         candidate_vec = embedding[:, i]
         nearest_neighbors.fit(current_embedding)
         nn_ind = nearest_neighbors.kneighbors(return_distance=False)
-        score = (
-            np.mean(np.abs(candidate_vec[:, None] - candidate_vec[nn_ind])) * weights[i]
-        )
+
+        score = np.mean(np.abs(candidate_vec[:, None] - candidate_vec[nn_ind]))
+
+        if output_raw_scores:
+            raw_scores.append(score)
+
+        score *= weights[i]
+
         if score > threshold:
             embed_list.append(i)
             scores_pass.append(score)
@@ -118,5 +143,8 @@ def heuristic_importance_score(
         else:
             scores_fail.append(score)
             scores_pass.append(0)
+
+    if output_raw_scores:
+        return embed_list, scores_pass, scores_fail, raw_scores, weights
 
     return embed_list, scores_pass, scores_fail

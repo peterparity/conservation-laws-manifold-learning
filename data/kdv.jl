@@ -71,7 +71,7 @@ addprocs(total_procs - nprocs(), exeflags = "--project=$(Base.active_project())"
     end
 end
 
-function init(rng, n_trajs, n_samples; l = 20.0, n = 1000, total_time = 100, dt = 1e-3)
+function init(rng, n_trajs, n_samples; l = 20.0, n = 1000, total_time = 100)
     tvecs = sort(total_time .* rand(rng, n_samples, n_trajs), dims = 1)
 
     iω = 2π * im * rfftfreq(n, n / l)
@@ -96,7 +96,7 @@ end
     rng = MersenneTwister(0),
 )
     tvecs, v0s =
-        init(rng, n_trajs, n_samples; l = l, n = n, total_time = total_time, dt = dt)
+        init(rng, n_trajs, n_samples; l = l, n = n, total_time = total_time)
 
     out = pmap(
         x -> generate_data(
@@ -143,7 +143,7 @@ npzwrite(
     Dict("data" => permutedims(data, (3, 2, 1)), "params" => permutedims(params, (2, 1))),
 )
 
-# tvecs, v0s = init(rng, n_trajs, n_samples; l = l, n = n, total_time = total_time, dt = dt)
+# tvecs, v0s = init(rng, n_trajs, n_samples; l = l, n = n, total_time = total_time)
 # traj, params = generate_data(
 #     # tvecs[:, 1],
 #     0:dt:total_time,
