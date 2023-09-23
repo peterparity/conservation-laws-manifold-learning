@@ -48,9 +48,9 @@ function init(rng, n_trajs, n_samples; total_time = 100 * n_samples)
 
     u0s = transpose(
         hcat(
-            1.5π .* (rand(rng, n_trajs) .- 0.5),
+            2π .* (rand(rng, n_trajs) .- 0.5),
             0.5 .* randn(rng, n_trajs),
-            1.5π .* (rand(rng, n_trajs) .- 0.5),
+            2π .* (rand(rng, n_trajs) .- 0.5),
             0.5 .* randn(rng, n_trajs),
         ),
     )
@@ -72,7 +72,7 @@ n_trajs = 1000
 n_samples = 500
 data, params = batch_generate(n_trajs, n_samples)
 
-save_file = joinpath(@__DIR__, "double_pendulum_$(n_trajs)_$(n_samples)_x1.5pi_v0.5.npz")
+save_file = joinpath(@__DIR__, "double_pendulum_$(n_trajs)_$(n_samples)_v0.5.npz")
 println("Saving to: ", save_file)
 npzwrite(
     save_file,

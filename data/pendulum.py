@@ -39,11 +39,11 @@ def generate_data(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("n_trajs", type=int, default=100, help="number of trajectories")
+    parser.add_argument("n_trajs", type=int, default=200, help="number of trajectories")
     parser.add_argument(
         "n_samples",
         type=int,
-        default=100,
+        default=200,
         help="number of time samples per trajectory",
     )
     parser.add_argument(
